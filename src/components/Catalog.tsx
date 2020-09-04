@@ -1,16 +1,36 @@
-import React from 'react'
-import { useSelector } from 'react-redux';
+import React, { useState, useEffect } from 'react'
+import { IProduct } from '../store/modules/cart/types';
+import api from '../services/api';
+
 
 
 const Catalog: React.FC = () => {
-    //fazer uma busca dentro do store, retornando todo o conteudo.
-    const catalog = useSelector(state => state);
-
-    console.log(catalog);
     
-        return (
+    const [catalog, setCatalog] = useState<IProduct[]>([]);
+  
+    useEffect(() => {
+        api.get('products').then(response => {
+            setCatalog(response.data);
+        })
+    }, [])
+    
+    return (
+        <main>
             <h1>Catalogo</h1>
-        );
+            {catalog.map(product => (
+                <article key={product.id}>
+                    <strong>{product.title}</strong> {" - "}
+                    <span>{product.price}</span> {"  "}
+
+
+                    <button type="button">Comprar</button>
+                </article>
+            ))}
+        </main>
+        
+
+        
+    );
 }
 
 export default Catalog;
